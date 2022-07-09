@@ -3,14 +3,50 @@ import 'package:meetings_api/meetings_api.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
+/// {@template meeting}
+/// A single meeting item.
+///
+/// Contains a [name], [date], [members], [products] and [id]
+///
+/// If an [id] is provided, it cannot be empty. If no [id] is provided, one
+/// will be generated.
+///
+/// [Meeting]s are immutable and can be copied using [copyWith], in addition to
+/// being serialized and deserialized using [toJson] and [Meeting.fromJson]
+/// respectively.
+/// {@endtemplate}
+///
 @immutable
 class Meeting extends Equatable {
-  Meeting({String? id, required this.name, required this.date})
-      : assert(
+  /// {@macro meeting}
+  Meeting({
+    String? id,
+    required this.name,
+    required this.date,
+    required this.members,
+    required this.products,
+  })  : assert(
           id == null || id.isNotEmpty,
           'id can not be null and should be empty',
         ),
-        id = id ?? Uuid().v4();
+        id = id ?? const Uuid().v4();
+
+  ///Deserializes the given [JsonMap] into a [Meeting]
+  factory Meeting.fromJson(JsonMap map) {
+    final membersJson = map['members'] as List<JsonMap>;
+    final membersList = membersJson.map(Member.fromJson).toList();
+
+    final productsJson = map['products'] as List<JsonMap>;
+    final productsList = productsJson.map(Product.fromJson).toList();
+
+    return Meeting(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      date: map['date'] as String,
+      members: membersList,
+      products: productsList,
+    );
+  }
 
   ///The unique identifier of the meeting
   ///
@@ -27,37 +63,204 @@ class Meeting extends Equatable {
   ///May be empty
   final String date;
 
+  ///The list of the [Member]s
+  ///
+  ///May be empty
+  final List<Member> members;
+
+  ///The list of the [Product]s
+  ///
+  ///May be empty
+  final List<Product> products;
+
+  ///Covert this [Meeting] into a [JsonMap]
+  JsonMap toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'date': date,
+      'members': members.map((e) => e.toJson()).toList(),
+      'products': products.map((e) => e.toJson()).toList(),
+    };
+  }
+
   ///Return the copy of this meeting with the given parameters
   Meeting copyWith({
     String? id,
     String? name,
     String? date,
+    List<Member>? members,
+    List<Product>? products,
   }) {
     return Meeting(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      date: date ?? this.date,
+        id: id ?? this.id,
+        name: name ?? this.name,
+        date: date ?? this.date,
+        members: members ?? this.members,
+        products: products ?? this.products);
+  }
+
+  @override
+  List<Object?> get props => [id, name, date, members, products];
+}
+
+/// {@template meeting}
+/// A single member item.
+///
+/// Contains a [id] , [name] and [balance].
+///
+/// If an [id] is provided, it cannot be empty. If no [id] is provided, one
+/// will be generated.
+///
+/// /// If an [balance] is provided, it cannot be empty. If no [balance] is provided,
+/// it will be equal to 0
+///
+/// [Member]s are immutable and can be copied using [copyWith], in addition to
+/// being serialized and deserialized using [toJson] and [Member.fromJson]
+/// respectively.
+/// {@endtemplate}
+@immutable
+class Member extends Equatable {
+  /// {@macro Member}
+  Member({String? id, required this.name, this.balance = 0})
+      : assert(
+          id == null || id.isNotEmpty,
+          'id can not be null and should be empty',
+        ),
+        id = id ?? const Uuid().v4();
+
+  ///Deserializes the given [JsonMap] into a [Member]
+  factory Member.fromJson(JsonMap map) {
+    return Member(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      balance: map['balance'] as double,
     );
   }
 
-  ///Covert this [Meeting] into a [JsonMap]
+  ///The unique identifier of the member
+  ///
+  ///Cannot be empty
+  final String id;
+
+  ///The name of the member
+  ///
+  ///May be empty
+  final String name;
+
+  ///The balance of the member
+  ///
+  ///May be empty
+  final double balance;
+
+  ///Covert this [Member] into a [JsonMap]
   JsonMap toJson() {
     return {
-      'id': this.id,
-      'name': this.name,
-      'date': this.date,
+      'id': id,
+      'name': name,
+      'balance': balance,
     };
   }
 
-  ///Deserializes the given [JsonMap] into a [Meeting]
-  factory Meeting.fromJson(Map<String, dynamic> map) {
-    return Meeting(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      date: map['date'] as String,
+  ///Return the copy of this member with the given parameters
+  Member copyWith({
+    String? id,
+    String? name,
+    double? balance,
+  }) {
+    return Member(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      balance: balance ?? this.balance,
     );
   }
 
   @override
-  List<Object?> get props => [id, name, date];
+  List<Object> get props => [id, name, balance];
+}
+
+/// {@template product}
+/// A single product item.
+///
+/// Contains a [name], [price], [membersId] and [id]
+///
+/// If an [id] is provided, it cannot be empty. If no [id] is provided, one
+/// will be generated.
+///
+/// [Product]s are immutable and can be copied using [copyWith], in addition to
+/// being serialized and deserialized using [toJson] and [Product.fromJson]
+/// respectively.
+/// {@endtemplate}
+///
+@immutable
+class Product extends Equatable {
+  ///@{macro product}
+  Product({
+    String? id,
+    required this.name,
+    required this.price,
+    required this.membersId,
+  })  : assert(
+          id == null || id.isNotEmpty,
+          'id can not be null and should be empty',
+        ),
+        this.id = id ?? const Uuid().v4();
+
+  ///Deserializes the given [JsonMap] into a [Product]
+  factory Product.fromJson(JsonMap map) {
+    return Product(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      price: map['price'] as double,
+      membersId: map['membersId'] as List<int>,
+    );
+  }
+
+  ///The unique identifier of the product
+  ///
+  ///Cannot be empty
+  final String id;
+
+  ///The name of the product
+  ///
+  ///May be empty
+  final String name;
+
+  ///The price of the product
+  ///
+  ///May be empty
+  final double price;
+
+  ///The ID list of members who have used the product
+  ///
+  ///May be empty
+  final List<int> membersId;
+
+  @override
+  List<Object?> get props => [id, name, price, membersId];
+
+  ///Return the copy of this product with the given parameters
+  Product copyWith({
+    String? id,
+    String? name,
+    double? price,
+    List<int>? membersId,
+  }) {
+    return Product(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      price: price ?? this.price,
+      membersId: membersId ?? this.membersId,
+    );
+  }
+
+  ///Covert this [Product] into a [JsonMap]
+  JsonMap toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'price': price,
+      'membersId': membersId,
+    };
+  }
 }
