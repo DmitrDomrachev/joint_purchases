@@ -112,7 +112,7 @@ void main() {
       String? id = '1',
       String name = 'name',
       double price = 1,
-      List<int> membersId = const [1],
+      List<String> membersId = const ['1'],
     }) {
       return Product(id: id, name: name, price: price, membersId: membersId);
     }
@@ -150,7 +150,7 @@ void main() {
             '1', //id
             'name', //name
             1, //price
-            [1] //membersId
+            ['1'] //membersId
           ]),
         );
       });
@@ -182,14 +182,14 @@ void main() {
               id: '2',
               name: 'new name',
               price: 2,
-              membersId: const [1, 2],
+              membersId: const ['1', '2'],
             ),
             equals(
               createSubject(
                 id: '2',
                 name: 'new name',
                 price: 2,
-                membersId: const [1, 2],
+                membersId: const ['1', '2'],
               ),
             ),
           );
@@ -205,7 +205,7 @@ void main() {
                 'id': '1',
                 'name': 'name',
                 'price': 1.0,
-                'membersId': [1],
+                'membersId': ['1'],
               }),
             ),
           );
@@ -216,7 +216,7 @@ void main() {
             'id': '1',
             'name': 'name',
             'price': 1.0,
-            'membersId': [1],
+            'membersId': ['1'],
           }, createSubject().toJson());
         });
       });
@@ -227,7 +227,7 @@ void main() {
     final memberSubject = Member(id: '1', name: 'name', balance: 1);
 
     final productSubject =
-        Product(id: '1', name: 'name', price: 1, membersId: const [1]);
+        Product(id: '1', name: 'name', price: 1, membersId: const ['1']);
 
     Meeting createSubject({
       String? id = '1',
@@ -341,7 +341,7 @@ void main() {
                   'id': '1',
                   'name': 'name',
                   'price': 1.0,
-                  'membersId': [1]
+                  'membersId': ['1']
                 }
               ]
             }),
@@ -363,7 +363,7 @@ void main() {
                 'id': '1',
                 'name': 'name',
                 'price': 1.0,
-                'membersId': [1]
+                'membersId': ['1']
               }
             ]
           },

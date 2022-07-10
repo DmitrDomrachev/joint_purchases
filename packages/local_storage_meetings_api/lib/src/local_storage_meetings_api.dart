@@ -38,8 +38,8 @@ class LocalStorageMeetingsApi extends MeetingsApi {
     final meetingsJson = _getValue(kMeetingsCollectionKey);
     if (meetingsJson != null) {
       final meetings =
-          List<Map<dynamic, dynamic>>.from(json.decode(meetingsJson) as List)
-              .map((e) => Meeting.fromJson(Map<String, dynamic>.from(e)))
+          List<Map<String, dynamic>>.from(jsonDecode(meetingsJson) as List)
+              .map((e) => Meeting.fromJson(JsonMap.from(e)))
               .toList();
       _meetingStreamController.add(meetings);
     } else {
@@ -53,6 +53,7 @@ class LocalStorageMeetingsApi extends MeetingsApi {
 
   @override
   Future<void> saveMeeting(Meeting meeting) {
+    print("saveMeeting");
     final meetings = [..._meetingStreamController.value];
     final meetingIndex =
         meetings.indexWhere((element) => element.id == meeting.id);
