@@ -6,7 +6,7 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    print('onChange(${bloc.runtimeType}, $change)');
+    log('onChange(${bloc.runtimeType}, $change)');
   }
   @override
   void onEvent(Bloc bloc, Object? event) {

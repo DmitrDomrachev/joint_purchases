@@ -7,7 +7,7 @@ abstract class MeetingsApi {
   /// {@macro meetings_api}
   const MeetingsApi();
 
-  /// Provides a [Stream] of all meetings.
+  /// Provides a [Stream] of all [Meeting]s.
   Stream<List<Meeting>> getMeetings();
 
   /// Saves a [Meeting].
@@ -15,9 +15,9 @@ abstract class MeetingsApi {
   /// If a [Meeting] with the same id already exists, it will be replaced.
   Future<void> saveMeeting(Meeting meeting);
 
-  /// Deletes the meeting with the given id.
+  /// Deletes the meeting_info with the given id.
   ///
-  /// If no meeting with the given id exists, a [MeetingNotFoundException] error is
+  /// If no meeting_info with the given id exists, a [MeetingNotFoundException] error is
   /// thrown.
   Future<void> deleteMeeting(String id);
 }

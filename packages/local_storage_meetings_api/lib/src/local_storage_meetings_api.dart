@@ -53,7 +53,7 @@ class LocalStorageMeetingsApi extends MeetingsApi {
 
   @override
   Future<void> saveMeeting(Meeting meeting) {
-    print("saveMeeting");
+
     final meetings = [..._meetingStreamController.value];
     final meetingIndex =
         meetings.indexWhere((element) => element.id == meeting.id);
@@ -78,4 +78,6 @@ class LocalStorageMeetingsApi extends MeetingsApi {
       return _setValue(kMeetingsCollectionKey, json.encode(meetings));
     }
   }
+
+
 }

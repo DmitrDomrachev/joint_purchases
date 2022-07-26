@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meetings_repository/meetings_repository.dart';
 
-import '../home/view/view.dart';
+import '../pages/home/view/view.dart';
 import '../theme/theme.dart';
 
 class App extends StatelessWidget {

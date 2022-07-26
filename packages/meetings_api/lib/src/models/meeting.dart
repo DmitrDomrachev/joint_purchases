@@ -3,8 +3,8 @@ import 'package:meetings_api/meetings_api.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
-/// {@template meeting}
-/// A single meeting item.
+/// {@template meeting_info}
+/// A single meeting_info item.
 ///
 /// Contains a [name], [date], [members], [products] and [id]
 ///
@@ -18,7 +18,7 @@ import 'package:uuid/uuid.dart';
 ///
 @immutable
 class Meeting extends Equatable {
-  /// {@macro meeting}
+  /// {@macro meeting_info}
   Meeting({
     String? id,
     required this.name,
@@ -33,14 +33,20 @@ class Meeting extends Equatable {
 
   ///Deserializes the given [JsonMap] into a [Meeting]
   factory Meeting.fromJson(JsonMap map) {
-    final membersJson =
-        (map['members'] as List).map((dynamic e) => e as JsonMap).toList();
-    final membersList = membersJson.map(Member.fromJson).toList();
+    var membersList = <Member>[];
+    var productsList = <Product>[];
 
-    final productsJson =
-        (map['products'] as List).map((dynamic e) => e as JsonMap).toList();
-    final productsList = productsJson.map(Product.fromJson).toList();
+    try {
+      final membersJson =
+          (map['members'] as List).map((dynamic e) => e as JsonMap).toList();
+      membersList = membersJson.map(Member.fromJson).toList();
+    } catch (e) {}
 
+    try {
+      final productsJson =
+          (map['products'] as List).map((dynamic e) => e as JsonMap).toList();
+      productsList = productsJson.map(Product.fromJson).toList();
+    } catch (e) {}
     return Meeting(
       id: map['id'] as String,
       name: map['name'] as String,
@@ -50,17 +56,17 @@ class Meeting extends Equatable {
     );
   }
 
-  ///The unique identifier of the meeting
+  ///The unique identifier of the meeting_info
   ///
   ///Cannot be empty
   final String id;
 
-  ///The name of the meeting
+  ///The name of the meeting_info
   ///
   ///May be empty
   final String name;
 
-  ///The date of the meeting
+  ///The date of the meeting_info
   ///
   ///May be empty
   final String date;
@@ -86,7 +92,7 @@ class Meeting extends Equatable {
     };
   }
 
-  ///Return the copy of this meeting with the given parameters
+  ///Return the copy of this meeting_info with the given parameters
   Meeting copyWith({
     String? id,
     String? name,
@@ -107,7 +113,7 @@ class Meeting extends Equatable {
   List<Object?> get props => [id, name, date, members, products];
 }
 
-/// {@template meeting}
+/// {@template meeting_info}
 /// A single member item.
 ///
 /// Contains a [id] , [name] and [balance].
@@ -269,40 +275,3 @@ class Product extends Equatable {
     };
   }
 }
-
-// void main() {
-//   var jsonMap = {
-//     'id': '34168f4c-1cd2-455e-8f73-c2add9205130',
-//     'name': 'name1',
-//     'date': 'date1',
-//     'members': [
-//       {
-//         'id': '2ce2bb08-ffcd-4e5e-ab10-6863abdb6416',
-//         'name': 'Dmitry',
-//         'balance': 0.0
-//       },
-//       {
-//         'id': '813555b3-e004-4cbb-b600-7249bf7b81b8',
-//         'name': 'Zahaaar',
-//         'balance': 0.0
-//       }
-//     ],
-//     'products': [
-//       {
-//         'id': '3f6391d2-7851-49fd-9cca-02e86828aada',
-//         'name': 'Milk',
-//         'price': 1.3,
-//         'membersId': ['1']
-//       },
-//       {
-//         'id': '0608e25b-57fe-4e17-bb35-b9234e930257',
-//         'name': 'Water',
-//         'price': 0.5,
-//         'membersId': ['2']
-//       }
-//     ]
-//   };
-//
-//   Meeting meeting = Meeting.fromJson(jsonMap);
-//   print(meeting);
-// }
