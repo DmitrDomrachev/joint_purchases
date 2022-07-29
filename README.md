@@ -7,7 +7,7 @@ An application for calculating joint purchases
 
 - Saving data locally on the device using sharedPref. ✅ [done]
 - Creating a meeting with products and members. ✅ [done]
-- Calculation of the cost of purchases for each member, depending on what goods he used.💻 [in work]
-- Saving data locally on the device using sqlite. ⏳ [coming soon]
+- Calculation of the cost of purchases for each member, depending on what goods he used. ✅ [done]
+- Saving data locally on the device using Hive. 💻 [in work]
 - Syncing local data with the cloud. 📆 [in the plans]
 - The ability to share the meeting with other users. 📆 [in the plans]
