@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:meetings_repository/meetings_repository.dart';
@@ -31,15 +30,15 @@ class NewMeetingPage extends StatelessWidget {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
-                    SnackBar(
-                      content: Text("Произошла ошибка во время сохранения"),
+                    const SnackBar(
+                      content: Text('Произошла ошибка во время сохранения'),
                     ),
                   );
               }
             },
           ),
         ],
-        child: NewMeetingView(),
+        child: const NewMeetingView(),
       ),
     );
   }
@@ -50,43 +49,28 @@ class NewMeetingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final floatingActionButtonTheme = theme.floatingActionButtonTheme;
-    final fabBackgroundColor = floatingActionButtonTheme.backgroundColor ??
-        theme.colorScheme.secondary;
-
     return BlocBuilder<NewMeetingBloc, NewMeetingState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Новая встреча'),
+            title: const Text('Новая встреча'),
           ),
-          floatingActionButton: FloatingActionButton.extended(
-            backgroundColor: fabBackgroundColor,
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.save_rounded),
             onPressed: () {
-              if (state.name.isEmpty) {
-                ScaffoldMessenger.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(
-                    SnackBar(
-                      content: Text("Название не может быть пустым"),
-                    ),
-                  );
-              } else {
-                context.read<NewMeetingBloc>().add(NewMeetingSubmitted());
-              }
+              context.read<NewMeetingBloc>().add(const NewMeetingSubmitted());
             },
-            label: const Text("Создать"),
           ),
           body: Container(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Название"),
+              children: const [
                 _NameField(),
-                Text('Дата проведение'),
-                _DatePicker(),
+                SizedBox(
+                  height: 16,
+                ),
+                _DateField(),
               ],
             ),
           ),
@@ -96,65 +80,57 @@ class NewMeetingView extends StatelessWidget {
   }
 }
 
-class _DatePicker extends StatelessWidget {
-  const _DatePicker({Key? key}) : super(key: key);
+class _NameField extends StatelessWidget {
+  const _NameField({super.key});
 
   @override
   Widget build(BuildContext context) {
-    DateFormat dateFormat = DateFormat('yyyy-MM-dd');
-    DateTime currentDate = DateTime.now();
+    return TextField(
+      autofocus: true,
+      decoration: const InputDecoration(labelText: 'Название'),
+      onChanged: (value) {
+        context.read<NewMeetingBloc>().add(NewMeetingNameChanged(value));
+      },
+    );
+  }
+}
+
+class _DateField extends StatelessWidget {
+  const _DateField({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final _controller = TextEditingController();
+
+    final dateFormat = DateFormat('yyyy-MM-dd');
+    final currentDate = DateTime.now();
     context
         .read<NewMeetingBloc>()
         .add(NewMeetingDateChanged(dateFormat.format(currentDate)));
 
     return BlocBuilder<NewMeetingBloc, NewMeetingState>(
       builder: (context, state) {
+        _controller.value = _controller.value.copyWith(text: state.date);
+        return TextField(
+          controller: _controller,
+          readOnly: true,
+          decoration: const InputDecoration(labelText: 'Дата проведения'),
+          onTap: () async {
+            final newDate = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100));
 
+            if (newDate == null) return;
 
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(state.date),
-            TextButton(
-              onPressed: () async {
-                DateTime? newDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100));
-
-                if (newDate != null) {
-                  context
-                      .read<NewMeetingBloc>()
-                      .add(NewMeetingDateChanged(dateFormat.format(newDate)));
-                }
-              },
-              child: Text("ИЗМЕНИТЬ"),
-            )
-          ],
+            context.read<NewMeetingBloc>().add(
+                  NewMeetingDateChanged(
+                    dateFormat.format(newDate),
+                  ),
+                );
+          },
         );
-      },
-    );
-  }
-}
-
-class _NameField extends StatelessWidget {
-  const _NameField({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final state = context.watch<NewMeetingBloc>().state;
-
-    return TextFormField(
-      // key: const Key('editMeetingView_name_textFormField'),
-
-      initialValue: '',
-      maxLength: 50,
-      inputFormatters: [
-        LengthLimitingTextInputFormatter(50),
-      ],
-      onChanged: (value) {
-        context.read<NewMeetingBloc>().add(NewMeetingNameChanged(value));
       },
     );
   }

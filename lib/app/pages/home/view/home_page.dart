@@ -30,57 +30,32 @@ class HomeView extends StatelessWidget {
       body: IndexedStack(
           index: selectedTab.index,
           children: const [MeetingOverviewPage(), StatsPage()]),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         key: const Key("homeView_addMeeting_floatingActionButton"),
         onPressed: () {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => NewMeetingPage()));
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add_rounded),
       ),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _HomeTabButton(
-              groupValue: selectedTab,
-              value: HomeTab.meetings,
-              icon: const Icon(Icons.list_rounded),
-            ),
-            _HomeTabButton(
-              groupValue: selectedTab,
-              value: HomeTab.stats,
-              icon: const Icon(Icons.show_chart_rounded),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _HomeTabButton extends StatelessWidget {
-  const _HomeTabButton({
-    Key? key,
-    required this.groupValue,
-    required this.value,
-    required this.icon,
-  }) : super(key: key);
-
-  final HomeTab groupValue;
-  final HomeTab value;
-  final Widget icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () => context.read<HomeCubit>().setTab(value),
-      iconSize: 32,
-      color:
-          groupValue != value ? null : Theme.of(context).colorScheme.secondary,
-      icon: icon,
+      // bottomNavigationBar: BottomAppBar(
+      //   shape: const CircularNotchedRectangle(),
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      //     children: [
+      //       _HomeTabButton(
+      //         groupValue: selectedTab,
+      //         value: HomeTab.meetings,
+      //         icon: const Icon(Icons.list_rounded),
+      //       ),
+      //       _HomeTabButton(
+      //         groupValue: selectedTab,
+      //         value: HomeTab.stats,
+      //         icon: const Icon(Icons.show_chart_rounded),
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 }

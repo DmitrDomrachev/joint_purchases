@@ -23,12 +23,12 @@ void main() {
           Product(
             name: 'Milk',
             price: 1.3,
-            membersId: const ['1'],
+            membersId: const ['1'], buyerId: '1',
           ),
           Product(
             name: 'Water',
             price: 0.5,
-            membersId: const ['2'],
+            membersId: const ['2'], buyerId: '2',
           )
         ],
       ),
@@ -40,12 +40,12 @@ void main() {
           Product(
             name: 'Milk',
             price: 1.3,
-            membersId: const ['1'],
+            membersId: const ['1'], buyerId: '1',
           ),
           Product(
             name: 'Water',
             price: 0.5,
-            membersId: const ['2'],
+            membersId: const ['2'], buyerId: '2',
           )
         ],
       ),

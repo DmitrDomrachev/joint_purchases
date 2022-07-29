@@ -111,6 +111,11 @@ class Meeting extends Equatable {
 
   @override
   List<Object?> get props => [id, name, date, members, products];
+
+  @override
+  String toString() {
+    return 'Meeting{id: ${id.substring(id.length - 2)}, name: $name, date: $date, members: $members, products: $products}';
+  }
 }
 
 /// {@template meeting_info}
@@ -171,6 +176,19 @@ class Member extends Equatable {
     };
   }
 
+  @override
+  String toString() {
+    return 'Member{id: ${id.substring(id.length - 2)}, name: $name, balance: $balance}';
+  }
+
+  ///Covert this [Member] into a [string]
+  String resultCalculate() {
+    final balToString =
+        balance < 0 ? 'должен получить ${balance.abs()}' : 'должен $balance';
+
+    return '$name $balToString';
+  }
+
   ///Return the copy of this member with the given parameters
   Member copyWith({
     String? id,
@@ -191,7 +209,7 @@ class Member extends Equatable {
 /// {@template product}
 /// A single product item.
 ///
-/// Contains a [name], [price], [membersId] and [id]
+/// Contains a [name], [price], [membersId], [buyerId] and [id]
 ///
 /// If an [id] is provided, it cannot be empty. If no [id] is provided, one
 /// will be generated.
@@ -209,6 +227,7 @@ class Product extends Equatable {
     required this.name,
     required this.price,
     required this.membersId,
+    required this.buyerId,
   })  : assert(
           id == null || id.isNotEmpty,
           'id can not be null and should be empty',
@@ -224,6 +243,7 @@ class Product extends Equatable {
       name: map['name'] as String,
       price: map['price'] as double,
       membersId: membersIdJson,
+      buyerId: map['buyerId'] as String,
     );
   }
 
@@ -247,8 +267,13 @@ class Product extends Equatable {
   ///May be empty
   final List<String> membersId;
 
+  ///The ID list of members who have used the product
+  ///
+  ///Can not be empty
+  final String buyerId;
+
   @override
-  List<Object?> get props => [id, name, price, membersId];
+  List<Object?> get props => [id, name, price, membersId, buyerId];
 
   ///Return the copy of this product with the given parameters
   Product copyWith({
@@ -256,12 +281,14 @@ class Product extends Equatable {
     String? name,
     double? price,
     List<String>? membersId,
+    String? buyerId,
   }) {
     return Product(
       id: id ?? this.id,
       name: name ?? this.name,
       price: price ?? this.price,
       membersId: membersId ?? this.membersId,
+      buyerId: buyerId ?? this.buyerId,
     );
   }
 
@@ -272,6 +299,14 @@ class Product extends Equatable {
       'name': name,
       'price': price,
       'membersId': membersId,
+      'buyerId': buyerId,
     };
+  }
+
+  @override
+  String toString() {
+    return 'Product{id: ${id.substring(id.length - 2)}, name: $name, price: '
+        '$price, membersId: $membersId, '
+        'buyerId: ${buyerId.substring(buyerId.length - 2)}}';
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joint_purchases/app/pages/meeting_result/view/meeting_result_page.dart';
 import 'package:meetings_api/meetings_api.dart';
 import 'package:meetings_repository/meetings_repository.dart';
 
@@ -11,104 +12,163 @@ export '../bloc/meeting_info_bloc.dart';
 export '../view/meeting_info_page.dart';
 
 class MeetingInfoPage extends StatelessWidget {
-  const MeetingInfoPage({Key? key, required this.meeting}) : super(key: key);
+  const MeetingInfoPage({super.key, required this.meeting});
 
   final Meeting meeting;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-      MeetingInfoBloc(
+      create: (context) => MeetingInfoBloc(
           meeting: meeting,
           meetingsRepository: context.read<MeetingsRepository>())
-        ..add(MeetingInfoSubscriptionRequested()),
-      child: MeetingInfoView(),
+        ..add(const MeetingInfoSubscriptionRequested()),
+      child: const MeetingInfoView(),
     );
   }
 }
 
 class MeetingInfoView extends StatelessWidget {
-  const MeetingInfoView({Key? key}) : super(key: key);
+  const MeetingInfoView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MeetingInfoBloc, MeetingInfoState>(
       builder: (context, state) {
-        var textTheme = Theme
-            .of(context)
-            .textTheme;
+        var theme = Theme.of(context);
+        var textTheme = theme.textTheme;
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('Встреча'),
+            title: const Text('Информация о встрече'),
           ),
-          body: SingleChildScrollView(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => MeetingResultPage(
+                    meeting: state.meeting,
+                  ),
+                ),
+              );
+            },
+            child: const Icon(Icons.calculate_rounded),
+          ),
+          body: SafeArea(
             child: Container(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    state.meeting.name,
-                    style: textTheme.headline5,
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(state.meeting.date, style: textTheme.headline6),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Участники',
-                        style: textTheme.bodyText2,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: theme.colorScheme.background,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            state.meeting.name,
+                            style: textTheme.headlineSmall,
+                          ),
+                          Text(
+                            state.meeting.date,
+                            style: textTheme.titleMedium,
+                          ),
+                        ],
                       ),
-                      TextButton(
-                          onPressed: () =>
-                          {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    EditMemberPage(meeting: state.meeting),
-                              ),
+                    ), //Head
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Card(
+                      //Members card
+                      margin: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Участники',
+                                  style: textTheme.bodyText2,
+                                ),
+                                TextButton(
+                                    onPressed: () => {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditMemberPage(
+                                                meeting: state.meeting,
+                                              ),
+                                            ),
+                                          ),
+                                        },
+                                    child: Text('ДОБАВИТЬ')),
+                              ],
                             ),
-                          },
-                          child: Text('ДОБАВИТЬ')),
-                    ],
-                  ),
-                  MembersListView(
-                    members: state.meeting.members,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Товары',
-                        style: textTheme.bodyText2,
+                          ),
+                          Divider(
+                            height: 0,
+                            thickness: 1,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                          MembersListView(
+                            members: state.meeting.members,
+                          ),
+                        ],
                       ),
-                      TextButton(
-                          onPressed: () =>
-                          {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    EditProductPage(meeting: state.meeting),
-                              ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Card(
+                      //Members card
+                      margin: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Товары',
+                                  style: textTheme.bodyText2,
+                                ),
+                                TextButton(
+                                    onPressed: () => {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditProductPage(
+                                                meeting: state.meeting,
+                                              ),
+                                            ),
+                                          ),
+                                        },
+                                    child: Text('ДОБАВИТЬ')),
+                              ],
                             ),
-                          },
-                          child: Text('ДОБАВИТЬ')),
-                    ],
-                  ),
-                  ProductsListView(
-                    products: state.meeting.products,
-                  ),
-                ],
+                          ),
+                          Divider(
+                            height: 0,
+                            thickness: 1,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                          ProductsListView(products: state.meeting.products),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -119,32 +179,35 @@ class MeetingInfoView extends StatelessWidget {
 }
 
 class MembersListView extends StatelessWidget {
-  const MembersListView({Key? key, required this.members}) : super(key: key);
+  const MembersListView({super.key, required this.members});
 
   final List<Member> members;
 
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<MeetingInfoBloc, MeetingInfoState>(
       builder: (context, state) {
-
         return Container(
           child: members.isEmpty
-              ? Text("Пусто")
-              : Column(
-            children: [
-              for (final member in members)
-                MemberListTitle(
-                  member: member,
-                  onTapDel: () {
-                    context
-                        .read<MeetingInfoBloc>()
-                        .add(MeetingInfoMemberDeleted(member));
-                  },
+              ? const ListTile(
+                  title: Text('Участников пока нет'),
                 )
-            ],
-          ),
+              : Column(
+                  children: [
+                    for (final member in members)
+                      ListTile(
+                        title: Text(member.name),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete_outline_rounded),
+                          onPressed: () {
+                            context
+                                .read<MeetingInfoBloc>()
+                                .add(MeetingInfoMemberDeleted(member));
+                          },
+                        ),
+                      )
+                  ],
+                ),
         );
       },
     );
@@ -152,8 +215,8 @@ class MembersListView extends StatelessWidget {
 }
 
 class ProductsListView extends StatelessWidget {
-  const ProductsListView({Key? key, required this.products})
-      : super(key: key);
+  const ProductsListView({super.key, required this.products});
+
   final List<Product> products;
 
   @override
@@ -162,31 +225,27 @@ class ProductsListView extends StatelessWidget {
       builder: (context, state) {
         return Container(
           child: products.isEmpty
-              ? Text("Пусто")
-              : Column(
-            children: [
-              for (final product in products)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(product.name),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                            "Использовало ${product.membersId.length} человек"),
-                        Text("${product.price} рублей"),
-                        IconButton(
-                            onPressed: () {
-                              context.read<MeetingInfoBloc>().add(
-                                  MeetingInfoProductDeleted(product));
-                            }, icon: Icon(Icons.delete)),
-                      ],
-                    )
-                  ],
+              ? const ListTile(
+                  title: Text('Товаров пока нет'),
                 )
-            ],
-          ),
+              : Column(
+                  children: [
+                    for (final product in products)
+                      ListTile(
+                        title: Text(product.name),
+                        subtitle: Text(
+                            '${product.price} рублей, ${product.membersId.length} участников'),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete_outline_rounded),
+                          onPressed: () {
+                            context
+                                .read<MeetingInfoBloc>()
+                                .add(MeetingInfoProductDeleted(product));
+                          },
+                        ),
+                      )
+                  ],
+                ),
         );
       },
     );

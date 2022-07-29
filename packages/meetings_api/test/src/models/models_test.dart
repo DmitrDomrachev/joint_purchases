@@ -113,8 +113,14 @@ void main() {
       String name = 'name',
       double price = 1,
       List<String> membersId = const ['1'],
+      String buyerId = '1',
     }) {
-      return Product(id: id, name: name, price: price, membersId: membersId);
+      return Product(
+          id: id,
+          name: name,
+          price: price,
+          membersId: membersId,
+          buyerId: buyerId);
     }
 
     group('constructor', () {
@@ -150,7 +156,8 @@ void main() {
             '1', //id
             'name', //name
             1, //price
-            ['1'] //membersId
+            ['1'], //membersId
+            '1'
           ]),
         );
       });
@@ -206,6 +213,7 @@ void main() {
                 'name': 'name',
                 'price': 1.0,
                 'membersId': ['1'],
+                'buyerId': '1',
               }),
             ),
           );
@@ -217,7 +225,8 @@ void main() {
             'name': 'name',
             'price': 1.0,
             'membersId': ['1'],
-          }, createSubject().toJson());
+            'buyerId': '1',
+          }, createSubject().toJson(),);
         });
       });
     });
@@ -227,7 +236,7 @@ void main() {
     final memberSubject = Member(id: '1', name: 'name', balance: 1);
 
     final productSubject =
-        Product(id: '1', name: 'name', price: 1, membersId: const ['1']);
+        Product(id: '1', name: 'name', price: 1, membersId: const ['1'], buyerId: '1');
 
     Meeting createSubject({
       String? id = '1',
@@ -341,7 +350,8 @@ void main() {
                   'id': '1',
                   'name': 'name',
                   'price': 1.0,
-                  'membersId': ['1']
+                  'membersId': ['1'],
+                  'buyerId':'1',
                 }
               ]
             }),
@@ -363,7 +373,9 @@ void main() {
                 'id': '1',
                 'name': 'name',
                 'price': 1.0,
-                'membersId': ['1']
+                'membersId': ['1'],
+                'buyerId':'1',
+
               }
             ]
           },

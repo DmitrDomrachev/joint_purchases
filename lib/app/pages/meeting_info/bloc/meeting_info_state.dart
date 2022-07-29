@@ -10,8 +10,6 @@ class MeetingInfoState extends Equatable {
 
   final MeetingInfoStatus status;
 
-
-
   @override
   List<Object> get props => [meeting, status];
 

@@ -24,14 +24,14 @@ void bootstrap({required MeetingsApi meetingsApi}) {
   final meetingsRepository = MeetingsRepository(meetingsApi: meetingsApi);
 
   runZonedGuarded(
-        () async {
+    () async {
       await BlocOverrides.runZoned(
-            () async => runApp(
+        () async => runApp(
           App(meetingsRepository: meetingsRepository),
         ),
         blocObserver: AppBlocObserver(),
       );
     },
-        (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
+    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
 }

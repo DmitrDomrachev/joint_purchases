@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:joint_purchases/app/pages/meeting_info/view/meeting_info_page.dart';
+import 'package:joint_purchases/app/pages/meeting_overview/meeting_overview.dart';
 import 'package:meetings_repository/meetings_repository.dart';
 
-import '../meeting_overview.dart';
-
 class MeetingOverviewPage extends StatelessWidget {
-  const MeetingOverviewPage({Key? key}) : super(key: key);
+  const MeetingOverviewPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +21,14 @@ class MeetingOverviewPage extends StatelessWidget {
 }
 
 class MeetingsOverviewView extends StatelessWidget {
-  const MeetingsOverviewView({Key? key}) : super(key: key);
+  const MeetingsOverviewView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.shopping_cart_rounded),
-        title: const Text("Скинемся"),
+        leading: const Icon(Icons.menu_rounded),
+        title: const Text('Скинемся'),
       ),
       body: MultiBlocListener(
         listeners: [
@@ -40,7 +40,10 @@ class MeetingsOverviewView extends StatelessWidget {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
-                      SnackBar(content: Text("Ошибка загрузки данных")));
+                    const SnackBar(
+                      content: Text('Ошибка загрузки данных'),
+                    ),
+                  );
               }
             },
           ), //Show SnackBar, MeetingsOverviewStatus.failure
@@ -57,9 +60,9 @@ class MeetingsOverviewView extends StatelessWidget {
                 ..showSnackBar(
                   SnackBar(
                     content:
-                        Text("Удалена встреча " + (deletedMeeting?.name ?? "")),
+                        Text('Удалена встреча ${deletedMeeting?.name ?? ''}'),
                     action: SnackBarAction(
-                      label: "Отменить",
+                      label: 'Отменить',
                       onPressed: () {
                         scaffoldMessenger.hideCurrentSnackBar();
                         context
@@ -81,41 +84,111 @@ class MeetingsOverviewView extends StatelessWidget {
                 );
               } else if (state.status != MeetingsOverviewStatus.success) {
                 return const Center(
-                  child: Text("Что-то пошло не так :("),
+                  child: Text('Что-то пошло не так :('),
                 );
               } else {
                 return Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      "Встреч пока не добавлено. Нажмите на +, чтобы добавить первую встречу.",
-                      style: Theme.of(context).textTheme.caption,
+                    padding: const EdgeInsets.all(16),
+                    child: const Text(
+                      'Встреч пока не добавлено. Нажмите на +, чтобы добавить '
+                      'первую встречу.',
                       textAlign: TextAlign.center,
                     ),
                   ),
                 );
               }
             }
-            return CupertinoScrollbar(
-                child: ListView(
-              children: [
-                for (final meeting in state.meetings)
-                  MeetingListTitle(
-                      meeting: meeting,
-                      onDismissed: (_) {
-                        context
-                            .read<MeetingsOverviewBloc>()
-                            .add(MeetingsOverviewMeetingDeleted(meeting));
-                      },
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => MeetingInfoPage(meeting: meeting,)));
-                      })
-              ],
-            ));
+            return const _MeetingsCards();
           },
         ),
       ),
+    );
+  }
+}
+
+class _MeetingsCards extends StatelessWidget {
+  const _MeetingsCards({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MeetingsOverviewBloc, MeetingsOverviewState>(
+      builder: (context, state) {
+        final theme = Theme.of(context);
+        final currDate = DateTime.now();
+
+        return SafeArea(
+          child: ColoredBox(
+            color: theme.colorScheme.background,
+            child: ListView(
+              children: [
+                for (final meeting in state.meetings)
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Slidable(
+                      key: ValueKey(meeting.hashCode),
+                      endActionPane: ActionPane(
+                        motion: const DrawerMotion(),
+                        dismissible: DismissiblePane(
+                          onDismissed: () => {
+                            context
+                                .read<MeetingsOverviewBloc>()
+                                .add(MeetingsOverviewMeetingDeleted(meeting))
+                          },
+                        ),
+                        children: [
+                          SlidableAction(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(12),
+                            ),
+                            icon: Icons.delete_outline_rounded,
+                            label: 'Удалить',
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onSecondary,
+                            onPressed: (BuildContext context) {
+                              context
+                                  .read<MeetingsOverviewBloc>()
+                                  .add(MeetingsOverviewMeetingDeleted(meeting));
+                            },
+                          )
+                        ],
+                      ),
+                      child: Card(
+                        margin: EdgeInsets.zero,
+                        elevation: 1,
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    MeetingInfoPage(meeting: meeting),
+                              ),
+                            );
+                          },
+                          title: Text(meeting.name),
+                          subtitle: Text(meeting.date),
+                          leading:
+                              currDate.isAfter(DateTime.parse(meeting.date))
+                                  ? const Icon(
+                                      Icons.done_rounded,
+                                      size: 40,
+                                    )
+                                  : const Icon(
+                                      Icons.hourglass_empty_outlined,
+                                      size: 40,
+                                    ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -37,4 +37,3 @@ class MeetingInfoProductDeleted extends MeetingInfoEvent {
   @override
   List<Object?> get props => [product];
 }
-

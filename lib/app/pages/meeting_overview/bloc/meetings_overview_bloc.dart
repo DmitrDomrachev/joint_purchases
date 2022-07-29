@@ -20,13 +20,12 @@ class MeetingsOverviewBloc
   final MeetingsRepository _meetingsRepository;
 
   Future<void> _onSubscriptionRequested(
-      MeetingsOverviewSubscriptionRequested event,
-      Emitter<MeetingsOverviewState> emit,
-      ) async {
+    MeetingsOverviewSubscriptionRequested event,
+    Emitter<MeetingsOverviewState> emit,
+  ) async {
     emit(state.copyWith(status: () => MeetingsOverviewStatus.initial));
 
-    await emit.forEach<List<Meeting>>(
-        _meetingsRepository.getMeetings(),
+    await emit.forEach<List<Meeting>>(_meetingsRepository.getMeetings(),
         onData: (meetings) => state.copyWith(
               status: () => MeetingsOverviewStatus.success,
               meetings: () => meetings,
@@ -35,10 +34,8 @@ class MeetingsOverviewBloc
             state.copyWith(status: () => MeetingsOverviewStatus.failure));
   }
 
-  Future<void> _onMeetingDeleted(
-      MeetingsOverviewMeetingDeleted event,
-      Emitter<MeetingsOverviewState> emit
-      ) async {
+  Future<void> _onMeetingDeleted(MeetingsOverviewMeetingDeleted event,
+      Emitter<MeetingsOverviewState> emit) async {
     emit(state.copyWith(lastDeletedMeeting: () => event.meeting));
     await _meetingsRepository.deleteMeeting(event.meeting.id);
   }

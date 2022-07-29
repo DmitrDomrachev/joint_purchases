@@ -1,34 +1,22 @@
 import 'package:flutter/material.dart';
+import 'color_schemes.g.dart';
 
 class JointPurchasesTheme {
   static ThemeData get light {
     return ThemeData(
-      appBarTheme: const AppBarTheme(
-        color: Color(0xFF13B9FF),
-      ),
-      colorScheme: ColorScheme.fromSwatch(
-        accentColor: const Color(0xFF13B9FF),
-      ),
-      snackBarTheme: const SnackBarThemeData(
-        behavior: SnackBarBehavior.floating,
-      ),
-      toggleableActiveColor: const Color(0xFF13B9FF),
+      useMaterial3: true,
+      colorScheme: lightColorScheme,
+      inputDecorationTheme:
+          const InputDecorationTheme(border: OutlineInputBorder()),
     );
   }
 
   static ThemeData get dark {
     return ThemeData(
-      appBarTheme: const AppBarTheme(
-        color: Color(0xFF13B9FF),
-      ),
-      colorScheme: ColorScheme.fromSwatch(
-        brightness: Brightness.dark,
-        accentColor: const Color(0xFF13B9FF),
-      ),
-      snackBarTheme: const SnackBarThemeData(
-        behavior: SnackBarBehavior.floating,
-      ),
-      toggleableActiveColor: const Color(0xFF13B9FF),
+      useMaterial3: true,
+      colorScheme: darkColorScheme,
+      inputDecorationTheme:
+          const InputDecorationTheme(border: OutlineInputBorder()),
     );
   }
 }

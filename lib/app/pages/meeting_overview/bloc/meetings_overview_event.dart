@@ -23,4 +23,3 @@ class MeetingsOverviewMeetingDeleted extends MeetingsOverviewEvent {
 class MeetingsOverviewUndoDeletingRequested extends MeetingsOverviewEvent {
   const MeetingsOverviewUndoDeletingRequested();
 }
-

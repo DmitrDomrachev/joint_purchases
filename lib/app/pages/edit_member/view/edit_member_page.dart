@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meetings_repository/meetings_repository.dart';
 
 import '../edit_member.dart';
 
 class EditMemberPage extends StatelessWidget {
-  const EditMemberPage({Key? key, required this.meeting}) : super(key: key);
+  const EditMemberPage({super.key, required this.meeting});
 
   final Meeting meeting;
 
@@ -21,50 +20,34 @@ class EditMemberPage extends StatelessWidget {
             previous.status != current.status &&
             current.status == EditMemberStatus.success,
         listener: (context, state) => Navigator.of(context).pop(),
-        child: NewMemberView(),
+        child: const NewMemberView(),
       ),
     );
   }
 }
 
 class NewMemberView extends StatelessWidget {
-  const NewMemberView({Key? key}) : super(key: key);
-
+  const NewMemberView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final floatingActionButtonTheme = theme.floatingActionButtonTheme;
-    final fabBackgroundColor = floatingActionButtonTheme.backgroundColor ??
-        theme.colorScheme.secondary;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Новый участник'),
+        title: Text('Участник'),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () =>
-            {context.read<EditMemberBloc>().add(EditMemberSubmitted())},
-        backgroundColor: fabBackgroundColor,
-        label: Text("Добавить"),
+            {context.read<EditMemberBloc>().add(const EditMemberSubmitted())},
+        child: const Icon(Icons.save_rounded),
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Имя"),
-            TextFormField(
-              initialValue: '',
-              maxLength: 50,
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(50),
-              ],
-              onChanged: (value) {
-                context.read<EditMemberBloc>().add(EditMemberNameChanged(value));
-              },
-            ),
-          ],
+        child: TextField(
+          decoration: const InputDecoration(labelText: 'Имя'),
+          onChanged: (value) {
+            context.read<EditMemberBloc>().add(EditMemberNameChanged(value));
+          },
         ),
       ),
     );

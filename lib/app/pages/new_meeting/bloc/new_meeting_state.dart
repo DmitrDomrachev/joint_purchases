@@ -13,8 +13,6 @@ class NewMeetingState extends Equatable {
   final String name;
   final String date;
 
-
-
   @override
   List<Object> get props => [status, name, date];
 

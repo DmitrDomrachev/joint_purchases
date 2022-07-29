@@ -12,7 +12,6 @@ class MeetingsOverviewState extends Equatable {
   final List<Meeting> meetings;
   final Meeting? lastDeletedMeeting;
 
-
   MeetingsOverviewState copyWith({
     MeetingsOverviewStatus Function()? status,
     List<Meeting> Function()? meetings,
@@ -29,8 +28,8 @@ class MeetingsOverviewState extends Equatable {
 
   @override
   List<Object?> get props => [
-    status,
-    meetings,
-    lastDeletedMeeting,
-  ];
+        status,
+        meetings,
+        lastDeletedMeeting,
+      ];
 }

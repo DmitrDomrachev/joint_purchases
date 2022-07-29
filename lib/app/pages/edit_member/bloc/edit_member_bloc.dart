@@ -23,7 +23,6 @@ class EditMemberBloc extends Bloc<EditMemberEvent, EditMemberState> {
   final MeetingsRepository _meetingsRepository;
   final Meeting _meeting;
 
-
   void _onNameChanged(
       EditMemberNameChanged event, Emitter<EditMemberState> emit) {
     emit(state.copyWith(name: event.name));

@@ -39,5 +39,4 @@ class EditProductState extends Equatable {
       buyerId: buyerId ?? this.buyerId,
     );
   }
-
 }

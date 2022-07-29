@@ -38,4 +38,3 @@ class AppView extends StatelessWidget {
     );
   }
 }
-
